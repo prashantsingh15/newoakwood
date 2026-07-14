@@ -22,11 +22,14 @@ export function Navbar() {
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
     } else {
       document.body.style.overflow = "";
+      document.body.style.touchAction = "";
     }
     return () => {
       document.body.style.overflow = "";
+      document.body.style.touchAction = "";
     };
   }, [isMobileMenuOpen]);
 
@@ -81,7 +84,7 @@ export function Navbar() {
 
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="lg:hidden p-2 rounded-xl glass text-white"
+                className="lg:hidden p-2.5 rounded-xl glass text-white active:scale-95 transition-transform"
                 aria-label="Open menu"
               >
                 <Menu className="w-5 h-5" />
@@ -97,11 +100,11 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[60] glass-strong lg:hidden"
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[60] bg-neutral-950/98 backdrop-blur-xl lg:hidden"
           >
-            <div className="flex flex-col h-full p-6">
-              <div className="flex items-center justify-between mb-12">
+            <div className="flex flex-col h-full p-6 max-w-7xl mx-auto">
+              <div className="flex items-center justify-between mb-10">
                 <a href="#" className="flex items-center gap-2 text-white">
                   <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-gold to-gold-light flex items-center justify-center">
                     <TreePine className="w-5 h-5 text-neutral-900" />
@@ -112,26 +115,26 @@ export function Navbar() {
                 </a>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 rounded-xl glass text-white"
+                  className="p-2.5 rounded-xl bg-white/10 text-white active:scale-95 transition-transform"
                   aria-label="Close menu"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <nav className="flex-1">
-                <ul className="space-y-6">
+              <nav className="flex-1 flex items-center">
+                <ul className="space-y-5 w-full">
                   {NAV_LINKS.map((link, i) => (
                     <motion.li
                       key={link.name}
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: -24 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.08 }}
+                      transition={{ delay: i * 0.06, duration: 0.3 }}
                     >
                       <a
                         href={link.href}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="text-3xl font-serif text-white hover:text-gold transition-colors"
+                        className="block text-4xl sm:text-5xl font-serif text-white hover:text-gold transition-colors py-2"
                       >
                         {link.name}
                       </a>
@@ -140,12 +143,18 @@ export function Navbar() {
                 </ul>
               </nav>
 
-              <MagneticButton
-                className="w-full bg-white text-neutral-950 rounded-2xl py-4 text-base font-semibold hover:bg-gold-light transition-colors"
-                strength={0.1}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
               >
-                Plan My Holiday
-              </MagneticButton>
+                <MagneticButton
+                  className="w-full bg-white text-neutral-950 rounded-2xl py-4 text-base font-semibold hover:bg-gold-light transition-colors"
+                  strength={0.1}
+                >
+                  Plan My Holiday
+                </MagneticButton>
+              </motion.div>
             </div>
           </motion.div>
         )}

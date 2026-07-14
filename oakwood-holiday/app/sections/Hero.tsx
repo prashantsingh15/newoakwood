@@ -2,9 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { HERO_VIDEOS } from "@/app/lib/constants";
 import { SplitText } from "@/app/components/SplitText";
 import { GlassSearchCard } from "@/app/components/GlassSearchCard";
+import { useIsMobile } from "@/app/hooks/useIsMobile";
 
 function Particles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -17,6 +19,9 @@ function Particles() {
       "(prefers-reduced-motion: reduce)"
     ).matches;
     if (prefersReducedMotion) return;
+
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) return; // Disable particles on mobile for performance
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -37,8 +42,7 @@ function Particles() {
 
     const createParticles = () => {
       particles = [];
-      const isMobile = window.innerWidth < 768;
-      const count = isMobile ? 8 : Math.min(24, Math.floor(window.innerWidth / 60));
+      const count = Math.min(20, Math.floor(window.innerWidth / 80));
       for (let i = 0; i < count; i++) {
         particles.push({
           x: Math.random() * canvas.width,
@@ -71,14 +75,16 @@ function Particles() {
     createParticles();
     draw();
 
-    window.addEventListener("resize", () => {
+    const handleResize = () => {
       resize();
       createParticles();
-    });
+    };
+
+    window.addEventListener("resize", handleResize);
 
     return () => {
       cancelAnimationFrame(animationId);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -93,6 +99,7 @@ function Particles() {
 
 export function Hero() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -103,7 +110,7 @@ export function Hero() {
 
   return (
     <section className="relative min-h-[110svh] md:min-h-screen w-full overflow-hidden flex flex-col md:items-center md:justify-center">
-      {/* Video backgrounds */}
+      {/* Backgrounds — videos on desktop, crossfading images on mobile */}
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="sync">
           {HERO_VIDEOS.map((video, index) =>
@@ -116,17 +123,28 @@ export function Hero() {
                 transition={{ duration: 2, ease: "easeInOut" }}
                 className="absolute inset-0"
               >
-                <video
-                  src={video.src}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  poster={video.fallbackImage}
-                  className="absolute inset-0 w-full h-full object-cover animate-ken-burns"
-                  preload="metadata"
-                  aria-label={`${video.label} travel scene`}
-                />
+                {isMobile ? (
+                  <Image
+                    src={video.fallbackImage}
+                    alt={video.label}
+                    fill
+                    priority
+                    sizes="100vw"
+                    className="object-cover animate-ken-burns"
+                  />
+                ) : (
+                  <video
+                    src={video.src}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    poster={video.fallbackImage}
+                    className="absolute inset-0 w-full h-full object-cover animate-ken-burns"
+                    preload="metadata"
+                    aria-label={`${video.label} travel scene`}
+                  />
+                )}
               </motion.div>
             ) : null
           )}
@@ -156,15 +174,15 @@ export function Hero() {
             <SplitText
               text="Discover Extraordinary Journeys Across The World"
               delay={0.5}
-              stagger={0.05}
-              duration={1}
+              stagger={isMobile ? 0.03 : 0.05}
+              duration={isMobile ? 0.7 : 1}
             />
           </h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.4 }}
+            transition={{ duration: 0.8, delay: 1.2 }}
             className="text-white/75 text-base md:text-lg lg:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
           >
             Explore handpicked destinations, premium stays, exclusive member
@@ -174,7 +192,7 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 1.6 }}
+            transition={{ duration: 0.8, delay: 1.4 }}
             className="flex items-center justify-center gap-3"
           >
             {HERO_VIDEOS.map((_, index) => (

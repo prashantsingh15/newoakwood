@@ -16,7 +16,7 @@ export function SplitText({
   className = "",
   delay = 0,
   stagger = 0.04,
-  duration = 0.8,
+  duration = 0.7,
 }: SplitTextProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -27,15 +27,14 @@ export function SplitText({
 
     gsap.fromTo(
       words,
-      { y: 80, opacity: 0, rotateX: -40 },
+      { y: 40, opacity: 0 },
       {
         y: 0,
         opacity: 1,
-        rotateX: 0,
         duration,
         stagger,
         delay,
-        ease: "power3.out",
+        ease: "power2.out",
       }
     );
   }, [delay, duration, stagger]);
@@ -51,8 +50,7 @@ export function SplitText({
       {words.map((word, i) => (
         <span
           key={i}
-          className="split-word inline-block mr-[0.25em]"
-          style={{ transformStyle: "preserve-3d" }}
+          className="split-word inline-block mr-[0.25em] will-change-transform"
         >
           {word}
         </span>
