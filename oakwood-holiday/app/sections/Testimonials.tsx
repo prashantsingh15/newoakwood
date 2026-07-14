@@ -55,7 +55,7 @@ export function Testimonials() {
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={() => setIsPaused(true)}
         onTouchEnd={() => setIsPaused(false)}
-        className="flex gap-6 overflow-x-auto no-scrollbar px-4 sm:px-6 lg:px-8 pb-4 touch-pan-x"
+        className="flex gap-6 overflow-x-auto no-scrollbar px-4 sm:px-6 lg:px-8 pb-4"
       >
         {[...TESTIMONIALS, ...TESTIMONIALS].map((testimonial, index) => (
           <TestimonialCard key={`${testimonial.id}-${index}`} testimonial={testimonial} />

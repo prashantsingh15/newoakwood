@@ -53,7 +53,7 @@ export function HolidayPackages() {
 
       <motion.div
         ref={scrollRef}
-        className="flex gap-6 overflow-x-auto no-scrollbar px-4 sm:px-6 lg:px-8 pb-4 snap-x snap-mandatory touch-pan-x"
+        className="flex gap-6 overflow-x-auto no-scrollbar px-4 sm:px-6 lg:px-8 pb-4 snap-x snap-mandatory"
       >
         {HOLIDAY_PACKAGES.map((packageItem, index) => (
           <div key={packageItem.id} className="snap-start">
